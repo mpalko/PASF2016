@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ElectionData {
 	private Calendar date;
-	private Map<String, ElectionCountyData> countyMap;
+	public Map<String, ElectionCountyData> countyMap;
 	
 	public ElectionData(String filename, Calendar date){
 		countyMap = new HashMap<>();

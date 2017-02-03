@@ -39,6 +39,4 @@ public class CensusCountyData {
 		}
 		return null;
 	}
-	
-	
 }

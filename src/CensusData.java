@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class CensusData {
-	private Calendar date;
+	public Calendar date;
 	public Map<String, CensusCountyData> countyMap;
 	
 	public CensusData(String filename, int year){
