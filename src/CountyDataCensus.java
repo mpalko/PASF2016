@@ -1,7 +1,12 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Calendar;
 
 public class CountyDataCensus {
-	public static void main(String[] args){
+	public static void main(String[] args) throws FileNotFoundException{
+		FileOutputStream f = new FileOutputStream("file.txt");
+		System.setOut(new PrintStream(f));
 		String currentDir = System.getProperty("user.dir");
 		CensusData cd1990 = new CensusData(currentDir + "/data/Census1990.csv", 1990);
 		CensusData cd2000 = new CensusData(currentDir + "/data/Census2000.csv", 2000);
@@ -46,20 +51,34 @@ public class CountyDataCensus {
 		
 		ElectionData[] elections = {ed1988, ed1992, ed1996, ed2000, ed2004, ed2008, ed2012, ed2016};
 		
-		String factor = "Median Household Income";
-		for(int i = 0; i < elections.length-1;i++){
+		System.out.print("County\t");
+		int n = 0;
+		for(String demographic : cd2000.countyMap.get("ADAMS").dataMap.keySet()){
+			if(demographic.equals("NOTES:")){
+				continue;
+			}
+			System.out.print(demographic+"\t");
+		}
+		System.out.println();
 			for(String county : cd2010.countyMap.keySet()){
-				//System.out.print(county+"\t");
+				for(int i = 0; i < elections.length-1;i++){
+				System.out.print(county+"\t");
 				if(county.length() < 8){
 					//System.out.print("\t");
 				}
-			
-				Double v2 = CensusData.interpolateDasGupta(cd2000, cd2010, county, factor, election2016);
+				
+				for(String demographic : cd2000.countyMap.get("ADAMS").dataMap.keySet()){
+					if(demographic.equals("NOTES:")){
+						continue;
+					}
+					Double v1 = CensusData.interpolateDasGupta(getBestCensi(dates[i], censi)[0], getBestCensi(dates[i], censi)[1], county, demographic, dates[i]);
+					Double v2 = CensusData.interpolateDasGupta(cd2000, cd2010, county, demographic, election2016);
+					System.out.print(String.format("%.4f\t", v2-v1));
+				}
+				
 				Double e2 = ed2016.get(county, "PercentVotedRepublican");
 				Double e1 = elections[i].get(county, "PercentVotedRepublican");
-				Double v1 = CensusData.interpolateDasGupta(getBestCensi(dates[i], censi)[0], getBestCensi(dates[i], censi)[1], county, factor, dates[i]);
-				//System.out.println(String.format("%.4f\t%.4f\t%.4f\t%.4f", v1, v2, e1, e2));
-				System.out.println(String.format("%.4f\t%.4f", v2-v1, e2-e1));
+				System.out.println(e2-e1);
 			}
 		}
 	}
